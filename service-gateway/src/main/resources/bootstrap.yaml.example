@@ -1,0 +1,59 @@
+spring:
+  main:
+    web-application-type: reactive
+
+  application:
+    name: service-gateway
+
+  cloud:
+    nacos:
+      server-addr: nacos-server:8848
+      discovery:
+        namespace: 63451149-ef19-402d-b776-6da5677820df # 配置为你自己的namespace或者public
+      config:   # 当前默认dev环境, nacos配置文件名:service-gateway-dev.yaml
+        file-extension: yaml
+        namespace: 63451149-ef19-402d-b776-6da5677820df # 配置为你自己的namespace或者public
+        group: FDS_GROUP    # 记得对应起来
+
+        # 开启监听和自动刷新
+        refresh-enabled: true
+
+    gateway:
+      #      globalcors:
+      #        '[/**]':
+      #          allowedOrigins: "http://localhost"
+      #          allowedMethods:
+      #            - GET
+      #            - POST
+      routes:
+        - id: test
+          uri: lb://service-login
+          predicates:
+            - Path=/login/**
+
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+  profiles:
+    active: dev
+
+sa-token:
+  # token名称 (同时也是cookie名称)
+  token-name: login-token
+  # 7 天过期
+  timeout: 604800
+  # token临时有效期 (指定时间内无操作就视为token过期)，单位秒
+  activity-timeout: -1
+  # 是否允许同一账号并发登录 (为false时新登录挤掉旧登录)
+  is-concurrent: true
+  # 在多人登录同一账号时，是否共用一个token (为false时每次登录新建一个token)
+  is-share: false
+  # token风格
+  token-style: uuid
+  # 是否输出操作日志
+  is-log: false
+  # 是否从cookie中读取token
+  is-read-cookie: false
+

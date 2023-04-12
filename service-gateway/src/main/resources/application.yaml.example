@@ -1,0 +1,30 @@
+server:
+  port: 9527
+
+spring:
+
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource        # 数据源操作类型
+    driver-class-name: org.gjt.mm.mysql.Driver          # mysql 驱动
+    url: jdbc:mysql://tx_cloud:3306/fds?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: fds_admin
+    password: ENC(输入你加密后的密码)
+    druid:
+      test-while-idle: false
+
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: cc.seckill.srpingcloud.entities
+
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/*.xml
+
+jasypt:
+  encryptor:
+    algorithm: PBEWITHHMACSHA512ANDAES_256
+
+

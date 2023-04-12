@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.seckill.mapper.MenuMapper">
+
+    <select id="selectMenuListByRoleName" resultType="cc.seckill.entities.Menu">
+        SELECT menu_id,
+               menu_name,
+               name_zh,
+               parent_menu_name,
+               perms,
+               path,
+               component,
+               icon,
+               hidden,
+               enable,
+               create_date,
+               update_date,
+               creator_username,
+               type,
+               order_num
+        FROM tb_menu
+        WHERE menu_name in (SELECT menu_name
+                            FROM tb_role_menu
+                            WHERE role_name = #{roleName})
+    </select>
+
+</mapper>

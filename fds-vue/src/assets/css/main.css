@@ -1,0 +1,158 @@
+/*===============================================*/
+/*                   全局设置                     */
+/*===============================================*/
+/*清除浮动*/
+.clearfix:before,
+.clearfix:after {
+    content: "";
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+
+/*容器*/
+* {
+    padding: 0;
+    margin: 0;
+}
+
+/* start===设置x轴不出现滚动条===start */
+html {
+    overflow-y: auto;
+    width: 100%;
+    height: 100%;
+    font-size: 62.5%;
+}
+
+:root {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+:root body {
+    position: absolute;
+}
+
+body {
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+}
+
+/**修改全局的滚动条*/
+/**滚动条的宽度*/
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #eaecf1;
+    border-radius: 3px;
+}
+
+/* 隐藏element ui滚动栏x轴滚动轴 */
+.el-scrollbar__wrap {
+    overflow-x: hidden !important;
+}
+
+.el-loading-mask {
+    border-radius: 16px;
+}
+
+.el-scrollbar {
+    --el-scrollbar-opacity: 0.37;
+}
+
+/* 隐藏element ui滚动栏x轴滚动轴 */
+.is-horizontal {
+    display: none !important;
+}
+
+
+/* end=====设置x轴不出现滚动条=====end */
+
+
+/* 通用内容区玻璃效果 */
+.glass {
+    background-color: rgba(255, 255, 255, 0.75) !important;
+    -webkit-backdrop-filter: saturate(150%) blur(8px) !important;
+    backdrop-filter: saturate(150%) blur(8px) !important;
+}
+
+/*===============================================*/
+/*                   滚动条                      */
+/*===============================================*/
+
+.main-box::-webkit-scrollbar {
+    /*滚动条整体样式*/
+    width: 10px; /*高宽分别对应横竖滚动条的尺寸*/
+    height: 1px;
+}
+
+.main-box::-webkit-scrollbar-thumb {
+    /*滚动条里面小方块*/
+    border-radius: 10px;
+    background-color: skyblue;
+    background-image: -webkit-linear-gradient(
+            45deg,
+            rgba(255, 255, 255, 0.2) 25%,
+            transparent 25%,
+            transparent 50%,
+            rgba(255, 255, 255, 0.2) 50%,
+            rgba(255, 255, 255, 0.2) 75%,
+            transparent 75%,
+            transparent
+    );
+}
+
+.main-box::-webkit-scrollbar-track {
+    /*滚动条里面轨道*/
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    background: #ededed;
+    border-radius: 10px;
+}
+
+
+::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+    background-color: white;
+}
+
+::-webkit-scrollbar-thumb {
+    box-shadow: inset 0 0 0px white;
+    -webkit-box-shadow: inset 0 0 0px white;
+    background-color: rgb(193, 193, 193);
+    /*滚动条的背景颜色*/
+    border-radius: 20px;
+}
+
+/*解决表格固定列时的压样式问题*/
+.el-table__fixed {
+    height: calc(100% - 7px) !important;
+}
+
+.el-table__fixed-right {
+    height: calc(100% - 12px) !important;
+}
+
+.el-table__fixed-right::before,
+.el-table__fixed::before {
+    background-color: unset !important;
+}
+
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #c1c1c1;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}

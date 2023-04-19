@@ -13,5 +13,10 @@ import java.util.List;
  * version: 1.0 <br>
  */
 public interface RoleMapper extends BaseMapper<Role> {
+
     List<Role> selectRolesByUsername(@Param("username") String username);
+
+    List<Role> selectRolesByRoleNamePaging(@Param("roleName") String roleName,
+                                           @Param("start") Integer start,
+                                           @Param("count") Integer count);
 }

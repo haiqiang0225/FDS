@@ -8,7 +8,7 @@ $screen-xs-max: 599px;
 $screen-sm-max: 959px;
 $screen-md-max: 1279px;
 $screen-lg-max: 1919px;
-$screen-xl-max: 5000px;
+$screen-xl-max: 99999px;
 
 // media devices
 @mixin xs {
@@ -35,7 +35,19 @@ $screen-xl-max: 5000px;
   }
 }
 
+@mixin mac13 {
+  @media screen and (min-width: #{$screen-lg-min}) and (max-width: #{$screen-lg-max}) {
+    @content;
+  }
+}
+
 @mixin xl {
+  @media screen and (min-width: #{$screen-xl-min}) and (max-width: #{$screen-xl-max}) {
+    @content;
+  }
+}
+
+@mixin lg27 {
   @media screen and (min-width: #{$screen-xl-min}) and (max-width: #{$screen-xl-max}) {
     @content;
   }

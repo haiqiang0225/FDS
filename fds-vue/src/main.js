@@ -63,6 +63,10 @@ import ElementPlus, {ElMessage} from 'element-plus'
 
 import SvgIcon from "@/icons";
 
+
+// echarts
+import * as echarts from 'echarts';
+
 // fontawesome
 library.add(faHome, faSearch, faTags, faTag, faThLarge, faUserCircle,
     faAt, faAddressCard, faCodeFork, faChevronDown, faMapPin,
@@ -72,10 +76,13 @@ library.add(faHome, faSearch, faTags, faTag, faThLarge, faUserCircle,
     faGithub, faQq, faWeixin, faFaceGrin, faThumbsUp, faCommentDots,
     faMessage, faShield, faCopyright, faPhone);
 
+require('@/mock');
 
 const app = createApp(App);
 app.use(router);
 app.use(store);
+
+app.config.globalProperties.$echarts = echarts;
 
 SvgIcon(app);
 

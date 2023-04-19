@@ -4,7 +4,7 @@
     <!--登陆框-->
     <div class="login-box">
       <h2 class="box-title">FDS 故障诊断系统</h2>
-      <h3 class="login-box-item" style="margin: 0 0 0 .9rem">用户登录</h3>
+      <h3 class="login-box-item" style="margin: 0 0 0 .9rem">重置密码</h3>
 
 
       <!--    用户名    -->

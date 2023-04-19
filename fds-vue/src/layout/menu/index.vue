@@ -1,47 +1,62 @@
 <template>
 
   <el-menu
-      active-text-color="#5997fa"
+      active-text-color="@include font-color('color-primary')"
       background-color="@include background-color('color-primary')"
       text-color="@include font-color('color-title')"
 
       :default-active="editableTabsValue"
       :default-openeds="opends"
-      class="menu-container el-menu-vertical-demo"
+      class="menu-container el-menu-vertical-demo el-menu-vertical"
       :collapse="isCollapse"
       router
   >
     <div class="logo-container">
       <router-link to="/index">
-        <span class="logo"></span>
-        <span class="title">权限管理</span>
+
+        <span class="logo-warp-span">
+          <el-icon>
+            <svg-icon icon="fault" class="svg-icon"></svg-icon>
+          </el-icon>
+        </span>
+
+        <span class="title">FDS故障诊断系统</span>
       </router-link>
     </div>
 
     <ul v-for="menu in menuList">
       <!-- 如果有子集-->
-      <el-sub-menu :index="menu.path" v-if="menu.childrenList">
+      <el-sub-menu class="sub-menu" :index="menu.path" v-if="menu.childrenList && !menu.hidden">
         <template #title>
-          <el-icon>
-            <svg-icon :icon="menu.icon || 'default'"></svg-icon>
-          </el-icon>
-          <span>{{ menu.nameZh }}</span>
+          <span class="icon-warp-span">
+            <el-icon>
+              <svg-icon :icon="menu.icon || 'default'" class="svg-icon" :style="editableTabsValue === menu.path? 'fill: #FFAF34 !important;': ''"></svg-icon>
+            </el-icon>
+          </span>
+          <span class="item-title" :style="editableTabsValue === menu.path? 'color: #FFAF34 !important;': ''" v-show="!isCollapse">{{ menu.nameZh }}</span>
         </template>
 
-        <el-menu-item :index="item.path" v-for="item in menu.childrenList" @click="openTab(item)">
-          <el-icon>
-            <svg-icon :icon="item.icon || 'default'"></svg-icon>
-          </el-icon>
-          <span>{{ item.nameZh }}</span>
+        <el-menu-item v-if="!menu.hidden" :index="item.path" v-for="item in menu.childrenList" @click="openTab(item)">
+          <span class="icon-warp-span">
+            <el-icon>
+              <svg-icon :icon="item.icon || 'default'" class="svg-icon" :style="editableTabsValue === item.path? 'fill: #FFAF34 !important;': ''"></svg-icon>
+            </el-icon>
+          </span>
+          <span class="item-title" :style="editableTabsValue === item.path? 'color: #FFAF34 !important;': ''">{{ item.nameZh }}</span>
         </el-menu-item>
       </el-sub-menu>
 
       <!-- 如果没有子集 -->
-      <el-menu-item :index="menu.path" v-if="!menu.childrenList" @click="openTab(menu)">
-        <el-icon>
-          <svg-icon :icon="menu.icon || 'default'"></svg-icon>
-        </el-icon>
-        <template #title>{{ menu.nameZh }}</template>
+      <el-menu-item :index="menu.path" v-if="!menu.childrenList && !menu.hidden" @click="openTab(menu)">
+        <span class="icon-warp-span">
+          <el-icon>
+            <svg-icon  :icon="menu.icon || 'default'" class="svg-icon" :style="editableTabsValue === menu.path? 'fill: #FFAF34 !important;': ''"></svg-icon>
+          </el-icon>
+        </span>
+        <template #title>
+          <span class="item-title" :style="editableTabsValue === menu.path? 'color: #FFAF34 !important;': ''">{{ menu.nameZh }}
+          </span>
+        </template>
       </el-menu-item>
     </ul>
 
@@ -54,6 +69,18 @@ import {ref} from 'vue'
 import {useMenuStore} from "@/store/menu";
 import {storeToRefs} from "pinia";
 import {useTabsStore} from "@/store/tabs";
+import {
+  HomeFilled,
+  User,
+  Tickets,
+  Goods,
+  DocumentAdd,
+  Management,
+  Setting,
+  Edit,
+  SwitchButton,
+  Promotion
+} from '@element-plus/icons-vue'
 //==========================================================================================
 //                                        属性
 //==========================================================================================
@@ -93,27 +120,48 @@ const opends = ref([editableTabsValue.value]);
     height: 60px;
     line-height: 60px;
     text-align: center;
+    font-weight: 700;
+    font-family: Kai, serif;
+    padding: 14px;
 
-    .logo {
+    .logo-warp-span {
       display: inline-block;
+      margin-top: 7px;
       margin-left: 5px;
       overflow: hidden;
       font-size: 20px;
-      line-height: 55px;
-      color: #fff;
+      line-height: 60px;
+      //color: #fff;
       text-overflow: ellipsis;
       white-space: nowrap;
       vertical-align: middle;
+      fill: currentColor;
+
+      .svg-icon {
+        @include svg-color("color-primary-font");
+        stroke: #fff;
+      }
+
     }
 
     .title {
+      @include font-color("color-primary-font");
+
+      @include mac13 {
+        margin-left: 5px;
+        font-size: 26px;
+      }
+
+      @include lg27 {
+        margin-left: 5px;
+        font-size: 26px;
+
+      }
+
       display: inline-block;
-      margin-left: 5px;
       overflow: hidden;
-      font-size: 20px;
       line-height: 55px;
-      //color: #0c0c0c;
-      @include font-color("color-title");
+
       text-overflow: ellipsis;
       white-space: nowrap;
       vertical-align: middle;
@@ -121,10 +169,26 @@ const opends = ref([editableTabsValue.value]);
     }
   }
 
+  .icon-warp-span {
+
+    .svg-icon {
+      @include svg-color("color-primary-font");
+    }
+  }
+
+  .item-title {
+    //@include font-color("color-primary-font");
+    color: #FFFFFF;
+  }
+
+  .sub-menu {
+    @include font-color("color-primary-font");
+  }
 }
 
-.el-menu-item .is-active {
-  color: #8AF6AB;
+
+:deep(.el-menu-item .is-active > .item-title) {
+  @include font-color('color-primary');
 }
 
 .el-menu-item:hover {

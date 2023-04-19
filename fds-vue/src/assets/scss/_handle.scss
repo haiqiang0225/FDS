@@ -34,6 +34,12 @@ $theme-map: null !global;
   }
 }
 
+@mixin svg-color($color) {
+  @include themeify {
+    fill: themed($color) !important;
+  }
+}
+
 //获取边框颜色
 @mixin border-color($color) {
   @include themeify {

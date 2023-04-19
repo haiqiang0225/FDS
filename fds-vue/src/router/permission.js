@@ -36,14 +36,16 @@ router.beforeEach(async (to, from, next) => {
 });
 
 function initDynamicRouter(menuList) {
-    let routes = router.options.routes;
+    // let routes = router.options.routes;
     menuList.forEach(menu => {
         if (menu.childrenList) {
             menu.childrenList.forEach(e => {
-                addMenuToRouter(e);
+                if (!e.hidden)
+                    addMenuToRouter(e);
             });
         } else {
-            addMenuToRouter(menu);
+            if (!menu.hidden)
+                addMenuToRouter(menu);
         }
     });
 }

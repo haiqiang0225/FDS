@@ -43,11 +43,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource
     private UserDetailsService userDetailsService;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     public static final String[] PERMIT_ALL_URLS = {
             "/logout",
             "/image/**"

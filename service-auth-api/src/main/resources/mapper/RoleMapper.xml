@@ -2,10 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.seckill.mapper.RoleMapper">
     <select id="selectRolesByUsername" resultType="cc.seckill.entities.Role">
-        SELECT role_id, role_name, role_name_zh, create_time, update_time
+        SELECT role_id, role_name, role_name_zh, create_time, update_time, remark
         FROM tb_role
         WHERE role_name in (SELECT role_name
                             FROM tb_user_role
                             WHERE username = #{username})
     </select>
+
+
+    <select id="selectRolesByRoleNamePaging" resultType="cc.seckill.entities.Role">
+        SELECT role_id, role_name, role_name_zh, create_time, update_time, remark
+        FROM tb_role
+        <if test='roleName != null and roleName != ""'>
+            WHERE role_name LIKE "%"#{roleName}"%" or role_name_zh LIKE "%"#{roleName}"%"
+        </if>
+        <if test="count != -1">
+            LIMIT #{start}, #{count}
+        </if>
+    </select>
+
 </mapper>

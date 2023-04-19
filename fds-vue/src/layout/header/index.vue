@@ -6,7 +6,9 @@
     </div>
 
     <div class="navbar-right">
-      <Avatar></Avatar>
+      <MessageBox class="navbar-item"/>
+      <ThemeChanger class="navbar-item"/>
+      <Avatar style="margin-left: 20px"/>
     </div>
 
   </div>
@@ -14,7 +16,9 @@
 
 <script setup>
 import BreadCrumb from "@/layout/header/components/BreadCrumb.vue";
-import Avatar from "@/layout/header/components/Avatar.vue";</script>
+import Avatar from "@/layout/header/components/Avatar.vue";
+import ThemeChanger from "@/layout/header/components/ThemeChanger.vue";
+import MessageBox from "@/layout/header/components/MessageBox.vue";</script>
 
 
 <style lang="scss" scoped>
@@ -46,6 +50,10 @@ import Avatar from "@/layout/header/components/Avatar.vue";</script>
       box-sizing: border-box;
       cursor: pointer;
     }
+  }
+
+  .navbar-item {
+    margin: 0 3px 0 3px;
   }
 
 }

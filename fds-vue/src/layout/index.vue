@@ -2,7 +2,7 @@
   <div class="app-wrapper">
     <el-container>
       <!-- side bar -->
-      <el-aside class="sidebar-container">
+      <el-aside width="collapse" class="sidebar-container">
         <Menu/>
       </el-aside>
 
@@ -64,5 +64,6 @@ import Tabs from '@/layout/tabs'</script>
 :deep(ul.el-menu) {
   border-right-width: 0;
 }
+
 
 </style>

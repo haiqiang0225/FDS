@@ -25,6 +25,13 @@ public class MenuServiceImpl implements MenuService {
     @Resource
     private RoleMapper roleMapper;
 
+    @Override
+    public List<Menu> getResolvedMenuTreeList() {
+        List<Menu> menuList = menuMapper.selectList(null);
+        HashMap<String, Menu> menuHashMap = new HashMap<>();
+        menuList.forEach(menu -> menuHashMap.putIfAbsent(menu.getMenuName(), menu));
+        return resolveMenuTreeList(menuHashMap);
+    }
 
     @Override
     public List<Menu> resolveMenuTreeListByUsername(String username) {
@@ -39,8 +46,36 @@ public class MenuServiceImpl implements MenuService {
             menuList.forEach(menu -> menuHashMap.putIfAbsent(menu.getMenuName(), menu));
         }
 
-        List<Menu> menuList = new ArrayList<>();
+        return resolveMenuTreeList(menuHashMap);
+    }
 
+
+    @Override
+    public List<Menu> resolveMenuTreeListByRoleName(String roleName) {
+        List<Menu> menuList = menuMapper.selectMenuListByRoleName(roleName);
+        HashMap<String, Menu> menuHashMap = new HashMap<>();
+        menuList.forEach(menu -> menuHashMap.putIfAbsent(menu.getMenuName(), menu));
+
+        return resolveMenuTreeList(menuHashMap);
+    }
+
+    @Override
+    public List<Menu> getMenuListByRoleName(String roleName) {
+        return menuMapper.selectMenuListByRoleName(roleName);
+    }
+
+
+    /**
+     * description: resolveMenuTreeList 解析权限树 <br>
+     * version: 1.0 <br>
+     * date: 2023/4/17 14:49 <br>
+     * author: haiqiang0225@gmail.com <br>
+     *
+     * @param menuHashMap
+     * @return java.util.List<cc.seckill.entities.Menu>
+     */
+    public List<Menu> resolveMenuTreeList(HashMap<String, Menu> menuHashMap) {
+        List<Menu> menuList = new ArrayList<>();
         // 解析菜单树🌲
         for (String menuName : menuHashMap.keySet()) {
             Menu menu = menuHashMap.get(menuName);
@@ -61,8 +96,18 @@ public class MenuServiceImpl implements MenuService {
             }
         }
         // 按照OrderNum排序
-        menuList.sort(Comparator.comparingInt(Menu::getOrderNum));
+        sortedMenuTreeList(menuList);
 
         return menuList;
+    }
+
+
+    private void sortedMenuTreeList(List<Menu> menuList) {
+        menuList.sort(Comparator.comparingInt(Menu::getOrderNum));
+        for (Menu m : menuList) {
+            if (m.getChildrenList() != null) {
+                sortedMenuTreeList(m.getChildrenList());
+            }
+        }
     }
 }

@@ -35,4 +35,32 @@ public class MenuMapperTest {
         System.out.println(menuList);
     }
 
+
+//    @Test
+//    public void add() {
+//        String[] parents = {"RoleManagement", "MenuManagement", "DeviceManagement"};
+//        String[] suffixZh = {"角色", "权限", "设备"};
+//        String[] permPrefix = {"system:role:", "system:menu:", "system:device:"};
+//        String[] pathPrefix = {"/management/sys/role/", "/management/sys/menu/", "/management/sys/device/"};
+//
+//        for (int j = 0; j < parents.length; j++) {
+//            String parent = parents[j];
+//            String[] opts = {"Add", "Delete", "Query", "Update"};
+//            String[] optsZh = {"增加", "删除", "查询", "更新"};
+//
+//            for (int i = 0; i < opts.length; i++) {
+//                Menu m = new Menu();
+//                m.setMenuName((parent + opts[i]));
+//                m.setNameZh(optsZh[i] + suffixZh[j]);
+//                m.setParentMenuName(parent);
+//                m.setPerms(permPrefix[j] + opts[i].toLowerCase());
+//                m.setPath(pathPrefix[j] + opts[i].toLowerCase());
+//                m.setOrderNum(i);
+//                m.setHidden(true);
+//                menuMapper.insert(m);
+////                System.out.println(m);
+//            }
+//        }
+//    }
+
 }

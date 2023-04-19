@@ -22,6 +22,11 @@ export const useMenuStore = defineStore('menu', {
         },
         setIsRouterAlreadyBound(newVal) {
             this.isRouterAlreadyBound = newVal;
+        },
+        reset() {
+            this.isRouterAlreadyBound = false;
+            localStorage.removeItem("menuList");
+            sessionStorage.removeItem("menuList");
         }
     }
 });

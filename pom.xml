@@ -8,6 +8,7 @@
         <module>service-gateway</module>
         <module>service-auth</module>
         <module>service-auth-api</module>
+        <module>service-modle</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

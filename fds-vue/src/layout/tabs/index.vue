@@ -3,7 +3,7 @@
   <el-tabs
       v-model="editableTabsValue"
       type="card"
-      class="demo-tabs"
+      class="tabs"
       closable
       @tab-remove="removeTab"
       @tab-click="clickTab"
@@ -74,7 +74,9 @@ const clickTab = (target) => {
 
 
 <style lang="scss">
-.demo-tabs > .el-tabs__content {
+
+
+.tabs > .el-tabs__content {
   padding: 32px;
   color: #6b778c;
   font-size: 32px;
@@ -86,10 +88,12 @@ const clickTab = (target) => {
 }
 
 .el-tabs {
-  height: 45px;
+  height: 40px;
+  @include background-color('tabs-bar-color');
 }
 
 .el-tabs--card > .el-tabs__header .el-tabs__item.is-active {
-  background-color: lightgray;
+  background-color: #e7f2fe;
+  border-bottom-color:  #e7f2fe;
 }
 </style>

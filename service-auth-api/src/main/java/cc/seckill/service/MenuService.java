@@ -12,6 +12,8 @@ import java.util.List;
  */
 public interface MenuService {
 
+    List<Menu> getResolvedMenuTreeList();
+
 
     /**
      * description: resolveMenuTreeListByUsername 根据用户名解析菜单树<br>
@@ -23,4 +25,9 @@ public interface MenuService {
      * @return java.util.List<cc.seckill.entities.Menu>
      */
     List<Menu> resolveMenuTreeListByUsername(String username);
+
+
+    List<Menu> resolveMenuTreeListByRoleName(String roleName);
+
+    List<Menu> getMenuListByRoleName(String roleName);
 }

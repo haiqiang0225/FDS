@@ -31,16 +31,17 @@ public class SysUser {
     private Long userId;
 
     /**
+     * 用户名，每个用户唯一，可用于登录
+     */
+    private String username;
+
+    /**
      * 密码（加密存储）
      */
     @JsonIgnore
     @JSONField(serialize = false)
     private String password;
 
-    /**
-     * 用户名，每个用户唯一，可用于登录
-     */
-    private String username;
 
     /**
      * 用户手机号，可用于登录
@@ -78,9 +79,7 @@ public class SysUser {
     /**
      * 创建该用户的用户id
      */
-    @JsonIgnore
-    @JSONField(serialize = false)
-    private Long creatorUsername;
+    private String creatorUsername;
 
     /**
      * 用户性别：0 未知， 1 男， 2女, 其余待定

@@ -1,10 +1,12 @@
 package cc.seckill.service;
 
 import cc.seckill.domain.Result;
+import cc.seckill.entities.Role;
 import cc.seckill.entities.SysUser;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * description: UserService <br>
@@ -131,6 +133,45 @@ public interface UserService {
      * @return cc.seckill.domain.Result
      */
     Result resetPasswordByVerifyCode(SysUser sysUser, String verifyCode);
+
+    /**
+     * description: getRoleList 获取角色列表 <br>
+     * version: 1.0 <br>
+     * date: 2023/4/16 19:44 <br>
+     * author: haiqiang0225@gmail.com <br>
+     *
+     * @param username 用户名
+     * @param pageNum  页数
+     * @param pageSize 页大小
+     * @return java.util.List<cc.seckill.entities.SysUser>
+     */
+    List<SysUser> getUserListByUsername(String username, Integer pageNum, Integer pageSize);
+
+    /**
+     * description: getRoleCount 获取总数 <br>
+     * version: 1.0 <br>
+     * date: 2023/4/16 19:44 <br>
+     * author: haiqiang0225@gmail.com <br>
+     *
+     * @param query 查询
+     * @return java.lang.Long
+     */
+    Long getUserCount(String query);
+
+    /**
+     * description: getRolesForUserByName <br>
+     * version: 1.0 <br>
+     * date: 2023/4/17 08:33 <br>
+     * author: haiqiang0225@gmail.com <br>
+     *
+     * @param username 用户名
+     * @param start    起始
+     * @param count    偏移
+     * @return java.util.List<cc.seckill.entities.Role>
+     */
+    List<Role> getRolesForUserByName(String username, Integer start, Integer count);
+
+    boolean updateRolesForUser(SysUser sysUser, List<Role> roleList);
 
     /**
      * description:  支持的用户登录方式枚举 <br>

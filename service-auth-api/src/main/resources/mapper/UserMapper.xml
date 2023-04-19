@@ -2,4 +2,57 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.seckill.mapper.UserMapper">
 
+    <select id="selectUsersByUserNamePaging" resultType="cc.seckill.entities.SysUser">
+        SELECT user_id,
+        username,
+        phone_number,
+        email,
+        register_time,
+        register_ip,
+        nickname,
+        creator_username,
+        gender,
+        status
+        FROM tb_user
+        <if test='username != null and username != ""'>
+            WHERE username LIKE "%"#{username}"%" or nickname LIKE "%"#{username}"%"
+        </if>
+        <if test="count != -1">
+            LIMIT #{start}, #{count}
+        </if>
+    </select>
+
+
+    <select id="selectRolesByUsernamePaging" resultType="cc.seckill.entities.Role">
+        SELECT role_id,
+        role_name,
+        role_name_zh,
+        create_time,
+        update_time,
+        remark
+        FROM tb_role
+        WHERE role_name in (
+        SELECT tb_user_role.role_name as n
+        FROM tb_user_role
+        WHERE username = #{username}
+        )
+        <if test="count != -1">
+            LIMIT #{start}, #{count}
+        </if>
+    </select>
+
+    <delete id="deleteRolesByUsername">
+        DELETE
+        FROM tb_user_role
+        WHERE username = #{username}
+    </delete>
+
+    <insert id="insertRolesForUserByUsername">
+        INSERT INTO tb_user_role (username, role_name)
+        VALUES
+        <foreach item="data" collection="list" separator=",">
+            (#{username}, #{data.roleName})
+        </foreach>
+    </insert>
+
 </mapper>

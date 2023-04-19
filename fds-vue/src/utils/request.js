@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {ElMessage} from "element-plus";
+import {ElLoading, ElMessage} from "element-plus";
 import router from "@/router";
 
 const baseUrl = process.env.VUE_APP_AXIOS_BASE_URL;
@@ -14,8 +14,11 @@ const service = axios.create({
 //post请求头
 service.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded;charset=UTF-8";
 
+
+let loadingInstance;
 // 添加请求拦截器
 service.interceptors.request.use(function (config) {
+    loadingInstance = ElLoading.service("加载中");
     // 在发送请求之前做些什么
     let token = sessionStorage.getItem("token") || localStorage.getItem("token");
     // let access_token = sessionStorage.getItem("access_token") || localStorage.getItem("access_token");
@@ -24,7 +27,8 @@ service.interceptors.request.use(function (config) {
     }
     return config;
 }, function (error) {
-    // 对请求错误做些什么
+    loadingInstance?.close();
+    ElMessage.error("网络异常");
     return Promise.reject(error);
 });
 
@@ -43,10 +47,12 @@ service.interceptors.response.use(function (response) {
     } else if (msg) {
         ElMessage.info(msg);
     }
+    loadingInstance?.close();
     return response;
 }, function (error) {
     console.log(error)
-
+    loadingInstance?.close();
+    ElMessage.error("请求失败")
 
     let errMsg = undefined;
     // 自定义的状态编码

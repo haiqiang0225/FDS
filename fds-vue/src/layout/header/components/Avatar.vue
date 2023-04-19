@@ -67,7 +67,7 @@ let logout = async function () {
   await sessionStorage.clear();
 
   // VueX/Pinia 状态清除
-  await menuStore.setIsRouterAlreadyBound(false);
+  await menuStore.reset();
   await tabsStore.resetTabs();
 
   // 重定向到登录页
@@ -79,7 +79,7 @@ let logout = async function () {
 <style lang="scss" scoped>
 .el-dropdown-link {
   cursor: pointer;
-  color: red;
+  color: #8c939d;
   display: flex;
   align-items: center;
   text-align: center;

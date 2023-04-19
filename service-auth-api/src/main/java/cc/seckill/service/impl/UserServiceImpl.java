@@ -9,13 +9,14 @@ import cc.seckill.mapper.RoleMapper;
 import cc.seckill.mapper.UserMapper;
 import cc.seckill.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -41,6 +42,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private MenuMapper menuMapper;
+
+    @Resource
+    private BCryptPasswordEncoder passwordEncoder;
 
 
     @Override
@@ -106,17 +110,30 @@ public class UserServiceImpl implements UserService {
     public Result saveUserInfo(SysUser sysUser) {
         // 1. 查询一下是否是当前登录用户, 或者拥有修改用户信息的权限
         // 先判断是否是当前登录用户
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = authentication.getPrincipal();
-        if (sysUser.getUsername() != null && sysUser.getUsername().equals(principal)) {
-            log.info("用户自行修改用户信息为: {}", sysUser);
-            userMapper.updateById(sysUser);
-        } else {
-            // 如果不是再判断是否有权限
-            // 如果都不是,那么说明操作非法,抛出异常
-            saveUserInfoByAuthorized(sysUser);
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        Object principal = authentication.getPrincipal();
+//        if (sysUser.getUsername() != null && sysUser.getUsername().equals(principal)) {
+//            log.info("用户自行修改用户信息为: {}", sysUser);
+//            userMapper.updateById(sysUser);
+//        } else {
+//            // 如果不是再判断是否有权限
+//            // 如果都不是,那么说明操作非法,抛出异常
+//            saveUserInfoByAuthorized(sysUser);
+//        }
+        if (StringUtils.hasText(sysUser.getPassword())) {
+            sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
         }
-        return Result.ok();
+        int row;
+        if (sysUser.getUserId() != null && sysUser.getUserId() != -1) { // 说明是更新
+            row = userMapper.updateById(sysUser);
+        } else { // 说明是添加
+            row = userMapper.insert(sysUser);
+        }
+        if (row > 0) {
+            return Result.ok();
+        } else {
+            return Result.error();
+        }
     }
 
     @Override
@@ -137,6 +154,43 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result resetPasswordByVerifyCode(SysUser sysUser, String verifyCode) {
         return null;
+    }
+
+    @Override
+    public List<SysUser> getUserListByUsername(String username, Integer pageNum, Integer pageSize) {
+        if (!StringUtils.hasText(username)) {
+            username = null;
+        }
+        return userMapper.selectUsersByUserNamePaging(username, (pageNum - 1) * pageSize, pageSize);
+    }
+
+    @Override
+    public Long getUserCount(String username) {
+        Long cnt;
+        if (!StringUtils.hasText(username)) {
+            cnt = userMapper.selectCount(null);
+        } else {
+            QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+            queryWrapper.like("username", username)
+                    .or()
+                    .like("nickname", username);
+            cnt = userMapper.selectCount(queryWrapper);
+        }
+        return cnt;
+    }
+
+    @Override
+    public List<Role> getRolesForUserByName(String username, Integer start, Integer count) {
+        return userMapper.selectRolesByUsernamePaging(username, start, count);
+    }
+
+    @Override
+    @Transactional
+    public boolean updateRolesForUser(SysUser sysUser, List<Role> roleList) {
+        // 使用最简单的方式,先删除 再添加
+        userMapper.deleteRolesByUsername(sysUser.getUsername());
+        int i = userMapper.insertRolesForUserByUsername(sysUser.getUsername(), roleList);
+        return i > 0;
     }
 
     @PreAuthorize("hasAnyAuthority('system:all', 'system:user:all', 'system:user:edit')")

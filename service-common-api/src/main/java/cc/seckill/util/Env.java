@@ -49,4 +49,20 @@ public class Env {
         }
         return val;
     }
+
+    public static boolean isMacOs() {
+        String osName = System.getProperty("os.name");
+        return osName != null && osName.startsWith("Mac OS");
+    }
+
+    public static boolean isLinux() {
+        String osName = System.getProperty("os.name");
+        return osName != null && osName.startsWith("Linux");
+    }
+
+    public static boolean isWindows() {
+        String osName = System.getProperty("os.name");
+        return osName != null && osName.startsWith("Windows");
+    }
+
 }

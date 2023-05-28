@@ -14,23 +14,30 @@ import java.util.Collections;
  */
 public class Db2Pojo {
     public static void main(String[] args) {
-        String url = "jdbc:mysql://tx_cloud:3306/fds?useUnicode=true&characterEncoding=utf-8&useSSL=false";
+        String url = "jdbc:mysql://mysql_fds_server:3366/fds?useUnicode=true&characterEncoding=utf-8&useSSL=false";
         String username = "fds_admin";
         String password = System.getenv("mysql_fds_admin_pass");
+        String outputDir = ".\\tmp";
+        if (Env.isLinux() || Env.isMacOs()) {
+            outputDir = "/Users/hq/Desktop/pojo_output";
+        } else if (Env.isWindows()) {
+            outputDir = "D:/datas/sql";
+        }
         System.out.println(password);
+        String finalOutputDir = outputDir;
         FastAutoGenerator.create(url, username, password.trim())
                 .globalConfig(builder -> {
                     builder.author("jhq") // 设置作者
 //                            .enableSwagger() // 开启 swagger 模式
-                            .outputDir("/Users/hq/Desktop/pojo_output"); // 指定输出目录
+                            .outputDir(finalOutputDir); // 指定输出目录
                 })
                 .packageConfig(builder -> {
                     builder.parent("cc.seckill") // 设置父包名
-                            .pathInfo(Collections.singletonMap(OutputFile.xml, "/Users/hq/Desktop/pojo_output")); //
+                            .pathInfo(Collections.singletonMap(OutputFile.xml, finalOutputDir)); //
                     // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("tb_user", "tb_role", "tb_menu") // 设置需要生成的表名
+                    builder.addInclude("tb_user", "tb_role", "tb_menu", "tb_device", "tb_log", "tb_models") // 设置需要生成的表名
                             .addTablePrefix("tb_", "c_"); // 设置过滤表前缀
                 })
                 .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板

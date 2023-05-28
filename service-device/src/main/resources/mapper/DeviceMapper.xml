@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.seckill.mapper.DeviceMapper">
+    <select id="queryDeviceListByIDPaging" resultType="cc.seckill.entities.Device">
+        SELECT device_id,
+               device_name,
+               device_type,
+               communication_protocol,
+               ipv4,
+               ipv6,
+               communication_path,
+               device_status,
+               manufacturer,
+               location,
+               parent_device_id
+
+        FROM tb_device
+
+        <if test="keyword != null">
+            WHERE device_id LIKE "%"#{keyword}"%"
+        </if>
+        <if test="count != -1">
+            LIMIT #{start}, #{count}
+        </if>
+
+
+    </select>
+</mapper>

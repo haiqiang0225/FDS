@@ -1,12 +1,22 @@
 package cc.seckill.config;
 
+import com.google.gson.reflect.TypeToken;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.scripting.support.ResourceScriptSource;
+
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * description: DefaultRedisConfig 公用Redis配置,只有模块未配置时才注入 <br>
@@ -16,6 +26,9 @@ import org.springframework.data.redis.serializer.RedisSerializer;
  */
 @Configuration
 public class DefaultRedisConfig {
+
+    @Resource
+    private RedisConnectionFactory redisConnectionFactory;
 
     @Bean
     @ConditionalOnMissingBean(RedisTemplate.class)
@@ -41,5 +54,22 @@ public class DefaultRedisConfig {
 
         return template;
     }
+
+    @Bean
+    @ConditionalOnMissingBean(StringRedisTemplate.class)
+    public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory connectionFactory) {
+        return new StringRedisTemplate(connectionFactory);
+    }
+
+
+    @SuppressWarnings({"rawtypes"})
+    @Bean(name = "uuidRedisScript")
+    public DefaultRedisScript<List> uuidRedisScript() {
+        DefaultRedisScript<List> redisScript = new DefaultRedisScript<>();
+        redisScript.setScriptSource(new ResourceScriptSource(new ClassPathResource("scripts/uuid.lua")));
+        redisScript.setResultType(List.class);
+        return redisScript;
+    }
+
 
 }

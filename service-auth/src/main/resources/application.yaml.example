@@ -1,0 +1,48 @@
+server:
+  port: 5200
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource        # 数据源操作类型
+    driver-class-name: org.gjt.mm.mysql.Driver          # mysql 驱动
+    url: jdbc:mysql://tx_cloud:3366/fds?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: fds_admin
+    password: ENC(xxx)
+    druid:
+      test-while-idle: false
+
+  redis:
+    host: tx_cloud
+    port: 6379
+    password: ENC(xxx)
+    timeout: 10000
+    lettuce:
+      pool:
+        max-active: 8 # 最大连接
+        max-idle: 4   # 最大空闲连接
+        min-idle: 0
+        max-wait: 1000
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: cc.seckill.entities
+
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/*.xml
+
+
+jasypt:
+  encryptor:
+    algorithm: PBEWITHHMACSHA512ANDAES_256
+
+  springdoc:
+  swagger-ui:
+    enabled: false
+    urls:
+      - name: service-gateway
+        url: /v3/api-docs
+  api-docs:
+    enabled: false

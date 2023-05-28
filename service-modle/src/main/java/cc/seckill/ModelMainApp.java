@@ -1,4 +1,4 @@
-package seckill.cc;
+package cc.seckill;
 
 import cc.seckill.util.Env;
 import org.springframework.boot.SpringApplication;

@@ -79,6 +79,7 @@ import Dialog from './components/dialog'
 import {ElMessage, ElMessageBox} from 'element-plus'
 import MenuDialog from './components/RoleDialog.vue'
 import qs from "qs"
+import * as roleApi from "@/api/role"
 
 const tableData = ref([])
 
@@ -121,7 +122,7 @@ const handleMenuDialogValue = (id, name) => {
 }
 
 const initRoleList = async () => {
-  const res = await requestUtil.get("/api/sys/role/list?" + qs.stringify(queryForm.value));
+  const res = await roleApi.queryRoleList(qs.stringify(queryForm.value));
   tableData.value = res.data.roleList;
   total.value = res.data.total;
 }
@@ -165,7 +166,7 @@ const handleDelete = async (id) => {
   }
   let formData = new FormData();
   formData.set("ids", ids.join(','));
-  const res = await requestUtil.post("/api/sys/role/delete", formData);
+  const res = await roleApi.deleteRole(formData);
 
   if (res.data.code === 200) {
     ElMessage({
@@ -178,38 +179,6 @@ const handleDelete = async (id) => {
       type: 'error',
       message: res.data.msg,
     })
-  }
-}
-
-const handleResetPassword = async (id) => {
-  const res = await requestUtil.get("/api/sys/role/resetPassword/" + id)
-  if (res.data.code === 200) {
-    ElMessage({
-      type: 'success',
-      message: '执行成功!'
-    })
-    await initRoleList();
-  } else {
-    ElMessage({
-      type: 'error',
-      message: res.data.msg,
-    })
-  }
-}
-
-const statusChangeHandle = async (row) => {
-  let res = await requestUtil.get("/api/sys/role/updateStatus/" + row.id + "/status/" + row.status);
-  if (res.data.code === 200) {
-    ElMessage({
-      type: 'success',
-      message: '执行成功!'
-    })
-  } else {
-    ElMessage({
-      type: 'error',
-      message: res.data.msg,
-    })
-    await initRoleList();
   }
 }
 

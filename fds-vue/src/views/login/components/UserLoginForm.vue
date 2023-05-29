@@ -120,9 +120,9 @@ import {useMenuStore} from "@/store/menu";
 import {useUserStore} from "@/store/user";
 import {storeToRefs} from "pinia"
 
-import request from "@/utils/request";
 import qs from "qs"
 import router from "@/router";
+import * as userApi from "@/api/user"
 
 
 const loginStore = useLoginStore();
@@ -177,8 +177,7 @@ const doLogin = () => {
       } else {
         loginForm.value.verifyCode = undefined;
       }
-      let loginUrl = "/api/login?" + qs.stringify(loginForm.value);
-      let res = await request.post(loginUrl);
+      let res = await userApi.login(qs.stringify(loginForm.value));
       let data = res.data;
 
       // 返回成功

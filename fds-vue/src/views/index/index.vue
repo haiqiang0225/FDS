@@ -194,8 +194,7 @@
 
 <script setup>
 import {useUserStore} from "@/store/user";
-import {onMounted, ref, watch} from "vue";
-import {appendUrls, getRequestBaseUrl} from "@/utils/request";
+import {onMounted, ref} from "vue";
 import RecentlyFaultSummary from "@/views/index/components/RecentlyFaultChart.vue";
 import FaultSummaryByEquipmentType from "@/views/index/components/FaultSummaryByEquipmentType.vue";
 import SummaryOfFaultType from "@/views/index/components/FaultTypeBarChart.vue";
@@ -204,6 +203,7 @@ import FaultSeverityDegreeSummary from "@/views/index/components/FaultSeverityDe
 import SystemInfo from "@/views/index/components/SystemInfo/index.vue";
 import {useThemeStore} from "@/store/theme";
 import {storeToRefs} from "pinia";
+import * as userApi from "@/api/user"
 //==========================================================================================
 //                                        属性
 //==========================================================================================
@@ -214,7 +214,7 @@ const {theme} = storeToRefs(themeStore);
 
 const user = userStore.getUser;
 let uri = user ? user.avatarUri : "default.jpg";
-let avatarUrl = ref(appendUrls(getRequestBaseUrl(), "api", uri));
+let avatarUrl = ref(userApi.getAvatar(uri));
 
 const screenWidth = ref(window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
 //==========================================================================================

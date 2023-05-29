@@ -106,6 +106,8 @@ import Dialog from './components/dialog'
 import {ElMessage, ElMessageBox} from 'element-plus'
 import UserDialog from './components/UserDialog.vue'
 import qs from "qs"
+import * as userApi from "@/api/user"
+import {deleteUser} from "@/api/user";
 
 
 const tableData = ref([])
@@ -172,7 +174,7 @@ const handleMenuDialogValue = (prop) => {
 }
 
 const initUserList = async () => {
-  const res = await requestUtil.get("/api/sys/user/list?" + qs.stringify(queryForm.value));
+  const res = await userApi.queryUserList(qs.stringify(queryForm.value));
   tableData.value = res.data.userList;
   console.log(tableData.value);
   total.value = res.data.total;
@@ -232,7 +234,7 @@ const handleDelete = async (id) => {
   }
   let formData = new FormData();
   formData.set("ids", ids.join(','));
-  const res = await requestUtil.post("/api/sys/user/delete", formData);
+  const res = await userApi.deleteUser(formData);
 
   if (res.data.code === 200) {
     ElMessage({
@@ -249,7 +251,8 @@ const handleDelete = async (id) => {
 }
 
 const handleResetPassword = async (id) => {
-  const res = await requestUtil.get("/api/sys/user/resetPassword/" + id)
+  //todo:
+  const res = await userApi.resetPass(user.value);
   if (res.data.code === 200) {
     ElMessage({
       type: 'success',
@@ -265,7 +268,8 @@ const handleResetPassword = async (id) => {
 }
 
 const statusChangeHandle = async (row) => {
-  let res = await requestUtil.get("/api/sys/user/updateStatus/" + row.id + "/status/" + row.status);
+  //todo:
+  let res = await userApi.updateStatus(user.value);
   if (res.data.code === 200) {
     ElMessage({
       type: 'success',

@@ -40,6 +40,8 @@ import {defineEmits, defineProps, ref, watch} from "vue";
 import requestUtil from "@/utils/request";
 import {ElMessage} from 'element-plus'
 import qs from "qs";
+import * as roleApi from "@/api/role"
+import * as userApi from "@/api/user"
 
 const defaultProps = {
   children: 'childrenList',
@@ -77,11 +79,11 @@ const formRef = ref(null)
 const initFormData = async (param) => {
   console.log("initFormData");
   console.log(param);
-  const res = await requestUtil.get("/api/sys/role/list?pageSize=-1");
+  const res = await roleApi.queryRoleList("pageSize=-1");
   treeData.value = res.data.roleList;
 
 
-  const res2 = await requestUtil.get("/api/sys/user/roles?" + qs.stringify(param));
+  const res2 = await userApi.queryRolesByUser(qs.stringify(param));
 
   treeRef.value.setCheckedNodes(res2.data.roleList);
 
@@ -112,10 +114,7 @@ const handleConfirm = () => {
         if (valid) {
           let checkedRoleNodes = treeRef.value.getCheckedNodes();
 
-          const headers = {'Content-Type': 'application/json;charset=utf-8'}
-
-          let result = await requestUtil.post("/api/sys/user/updateRoles?" + qs.stringify(props.user), checkedRoleNodes,
-              {headers});
+          let result = await  userApi.updateUserRoles( qs.stringify(props.user), checkedRoleNodes);
 
           let data = result.data;
           if (data.code === 200) {
@@ -125,8 +124,7 @@ const handleConfirm = () => {
           } else {
             ElMessage.error(data.msg);
           }
-        }
-        else {
+        } else {
           console.log("fail")
         }
       }

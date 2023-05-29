@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import request, {appendUrls, getRequestBaseUrl} from "@/utils/request";
+import request from "@/utils/request";
 import {ArrowDown} from '@element-plus/icons-vue'
 import {useUserStore} from "@/store/user";
 import {ref} from "vue";
@@ -31,6 +31,7 @@ import {ElMessage} from "element-plus";
 import router from "@/router";
 import {useTabsStore} from "@/store/tabs";
 import {useMenuStore} from "@/store/menu";
+import * as userApi from "@/api/user"
 
 //==========================================================================================
 //                                        属性
@@ -42,7 +43,7 @@ const menuStore = useMenuStore();
 const user = userStore.getUser;
 
 let uri = user ? user.avatarUri : "default.jpg";
-let avatarUrl = ref(appendUrls(getRequestBaseUrl(), "api", uri));
+let avatarUrl = ref(userApi.getAvatar(uri));
 
 
 //==========================================================================================
@@ -51,8 +52,7 @@ let avatarUrl = ref(appendUrls(getRequestBaseUrl(), "api", uri));
 
 // 登出
 let logout = async function () {
-  let url = "/api/logout";
-  let result = await request.get(url);
+  let result = await userApi.logout();
   if (result.data.msg) {
     if (result.data.code && result.data.code === 200) {
       ElMessage.success(result.data.msg);

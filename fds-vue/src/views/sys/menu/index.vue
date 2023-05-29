@@ -106,12 +106,12 @@
 
 <script setup>
 import {ref} from 'vue';
-import requestUtil, {getRequestBaseUrl} from "@/utils/request";
 import {Search, Delete, DocumentAdd, Edit, Tools, RefreshRight} from '@element-plus/icons-vue'
 import Dialog from './components/dialog'
 import {ElMessage, ElMessageBox} from 'element-plus'
 import UserDialog from './components/MenuDialog.vue'
 import qs from "qs"
+import * as menuApi from "@/api/menu"
 
 const tableData = ref([])
 
@@ -151,7 +151,7 @@ const handleMenuDialogValue = (prop) => {
 }
 
 const initUserList = async () => {
-  const res = await requestUtil.get("/api/sys/menu/treeList?" + qs.stringify(queryForm.value));
+  const res = await menuApi.getMenuTreeList(qs.stringify(queryForm.value));
   tableData.value = res.data.menuTree;
   console.log(res.data.menuTree)
   total.value = res.data.total;
@@ -211,8 +211,8 @@ const handleDelete = async (id) => {
   }
   let formData = new FormData();
   formData.set("ids", ids.join(','));
-  const res = await requestUtil.post("/api/sys/user/delete", formData);
-
+  // const res = await requestUtil.post("/api/sys/user/delete", formData);
+  //todo:
   if (res.data.code === 200) {
     ElMessage({
       type: 'success',
@@ -226,39 +226,6 @@ const handleDelete = async (id) => {
     })
   }
 }
-
-const handleResetPassword = async (id) => {
-  const res = await requestUtil.get("/api/sys/user/resetPassword/" + id)
-  if (res.data.code === 200) {
-    ElMessage({
-      type: 'success',
-      message: '执行成功!'
-    })
-    await initUserList();
-  } else {
-    ElMessage({
-      type: 'error',
-      message: res.data.msg,
-    })
-  }
-}
-
-const statusChangeHandle = async (row) => {
-  let res = await requestUtil.get("/api/sys/user/updateStatus/" + row.id + "/status/" + row.status);
-  if (res.data.code === 200) {
-    ElMessage({
-      type: 'success',
-      message: '执行成功!'
-    })
-  } else {
-    ElMessage({
-      type: 'error',
-      message: res.data.msg,
-    })
-    await initUserList();
-  }
-}
-
 
 function showEditButton(code) {
   return code !== 'root';

@@ -53,6 +53,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                                     @NotNull FilterChain filterChain) throws ServletException, IOException {
         // 获取token, 如果没有token或者token失效,直接放行(不设置Security上下文)
         String token = request.getHeader("token");
+        log.info("login token = {}", token);
         if (!StringUtils.hasText(token)) {
             filterChain.doFilter(request, response);
             return;

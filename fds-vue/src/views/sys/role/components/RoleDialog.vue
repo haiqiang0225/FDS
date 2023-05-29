@@ -37,8 +37,8 @@
 <script setup>
 
 import {defineEmits, defineProps, ref, watch} from "vue";
-import requestUtil from "@/utils/request";
-import {ElMessage} from 'element-plus'
+import * as menuApi from "@/api/menu"
+import * as roleApi from "@/api/role"
 
 const defaultProps = {
   children: 'childrenList',
@@ -77,12 +77,12 @@ const form = ref({
 const formRef = ref(null)
 
 const initFormData = async (id) => {
-  const res = await requestUtil.get("/api/sys/menu/treeList");
+  const res = await menuApi.getMenuTreeList();
   treeData.value = res.data.menuTree;
 
   form.value.id = id;
 
-  const res2 = await requestUtil.get("/api/sys/role/menus/" + id + '/' + props.roleName);
+  const res2 = await roleApi.getMenusByRoleName(props.roleName);
   treeRef.value.setCheckedNodes(res2.data.menuTree);
 }
 

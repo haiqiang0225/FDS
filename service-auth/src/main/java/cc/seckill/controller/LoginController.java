@@ -50,7 +50,7 @@ public class LoginController {
      * date: 2022/12/29 21:33 <br>
      * author: haiqiang0225@gmail.com <br>
      *
-     * @param id         用户id,可以是username/电话/邮箱
+     * @param username         用户id,可以是username/电话/邮箱
      * @param password   用户密码
      * @param verifyCode 验证码
      * @return cc.seckill.domain.Result
@@ -58,7 +58,7 @@ public class LoginController {
     @RequestMapping("/login")
     public Result login(
             @NotNull @Pattern(regexp = ID_REGEX, message = "账号格式错误")
-            @RequestParam(value = "username") String id,
+            @RequestParam(value = "username") String username,
             @Pattern(regexp = UserService.PASS_REGEX, message = "密码格式错误!")
             @RequestParam(value = "password", required = false) String password,
             @Pattern(regexp = VERIFY_CODE_REGEX, message = "验证码格式错误!")
@@ -66,11 +66,11 @@ public class LoginController {
 
         // 使用验证码登录
         if (StringUtils.hasText(verifyCode)) {
-            log.info("使用验证码登录, 手机号: {}, 验证码: {}", id, verifyCode);
-            return loginService.loginByVerifyCode(id, verifyCode);
+            log.info("使用验证码登录, 手机号: {}, 验证码: {}", username, verifyCode);
+            return loginService.loginByVerifyCode(username, verifyCode);
         } else if (StringUtils.hasText(password)) {
-            log.info("使用账号密码登录, 账号: {}", id);
-            return loginService.login(id, password);
+            log.info("使用账号密码登录, 账号: {}", username);
+            return loginService.login(username, password);
         } else {
             throw new GlobalException(ResultStatusCodes.INVALID_PARAM);
         }

@@ -76,6 +76,7 @@ import {defineEmits, defineProps, ref, watch} from "vue"
 import requestUtil, {getRequestBaseUrl} from "@/utils/request";
 import {ElMessage} from 'element-plus'
 import qs from "qs";
+import * as userApi from "@/api/user"
 
 const props = defineProps(
     {
@@ -175,7 +176,7 @@ const handleConfirm = () => {
       let formData = qs.stringify(form.value);
       console.log(formData)
 
-      let result = await requestUtil.post("/api/sys/user/save", formData);
+      let result = await userApi.updateUser(formData);
       let data = result.data;
       if (data.code === 200) {
         ElMessage.success("执行成功！")

@@ -40,6 +40,8 @@ import {defineEmits, defineProps, ref, watch} from "vue";
 import requestUtil from "@/utils/request";
 import {ElMessage} from 'element-plus'
 import qs from "qs";
+import * as userApi from "@/api/user"
+import * as roleApi from "@/api/role"
 
 const defaultProps = {
   children: 'childrenList',
@@ -75,13 +77,13 @@ const form = ref({
 const formRef = ref(null)
 
 const initFormData = async (param) => {
-  console.log("initFormData");
-  console.log(param);
-  const res = await requestUtil.get("/api/sys/role/list?pageSize=-1");
+  // console.log("initFormData");
+  // console.log(param);
+  const res = await roleApi.queryRoleList("pageSize=-1");
   treeData.value = res.data.roleList;
 
 
-  const res2 = await requestUtil.get("/api/sys/user/roles?" + qs.stringify(param));
+  const res2 = await userApi.queryRolesByUser(qs.stringify(param));
 
   treeRef.value.setCheckedNodes(res2.data.roleList);
 
@@ -125,8 +127,7 @@ const handleConfirm = () => {
           } else {
             ElMessage.error(data.msg);
           }
-        }
-        else {
+        } else {
           console.log("fail")
         }
       }

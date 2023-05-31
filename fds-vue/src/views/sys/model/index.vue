@@ -34,7 +34,7 @@
             <el-button size="small"
                        :text="true"
                        style="width: 12px;"
-                       @click="copyModelId(scope.row.id)">
+                       @click="copyToClipBoard(scope.row.id)">
               <el-icon>
                 <svg-icon icon="copy"/>
               </el-icon>
@@ -118,12 +118,9 @@ import {Search, Delete, DocumentAdd, Edit, Tools, RefreshRight} from '@element-p
 import Dialog from './components/dialog'
 import {ElMessage, ElMessageBox, ElNotification} from 'element-plus'
 import UserDialog from './components/ModelDialog.vue'
-import qs from "qs"
+import {copyToClipBoard} from "@/utils/copy";
 import mockApi from "@/utils/mockApi";
 
-import useClipboard from "vue-clipboard3";
-
-const {toClipboard} = useClipboard()
 
 const tableData = ref([])
 
@@ -332,24 +329,6 @@ function showDeleteButton(code) {
   return code !== 'root';
 }
 
-
-async function copyModelId(id) {
-  try {
-    await toClipboard(id);
-    ElNotification({
-      title: '复制成功',
-      message: '已将模型ID复制到剪切板',
-      type: 'success',
-    });
-  } catch (e) {
-    ElNotification({
-      title: '复制失败',
-      message: '您的浏览器不支持复制',
-      type: 'error',
-    })
-    console.log(e);
-  }
-}
 
 </script>
 

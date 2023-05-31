@@ -36,4 +36,11 @@ public class DeviceMapperTest {
         assert !devices.isEmpty();
     }
 
+    @Test
+    public void testQueryDeviceListByParentId() {
+        List<Device> devices = deviceMapper.queryDeviceListByParentId("1KBRIKR3-001U-4VRI-002N-BTTF001ISLZJ");
+        System.out.println(devices);
+        assert !devices.isEmpty();
+    }
+
 }

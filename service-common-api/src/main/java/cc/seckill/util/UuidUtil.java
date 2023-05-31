@@ -100,7 +100,7 @@ public class UuidUtil {
 //            log.info("current segment : {}, {}", i, segBase62);
             builder.append(segBase62);
         }
-        String base62 = builder.toString();
+        String base62 = builder.toString().toUpperCase();
         return formatNumberToUUID(base62);
     }
 

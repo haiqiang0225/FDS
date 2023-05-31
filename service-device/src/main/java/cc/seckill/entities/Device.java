@@ -1,12 +1,14 @@
 package cc.seckill.entities;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -83,4 +85,7 @@ public class Device implements Serializable {
      * 父设备UUID
      */
     private String parentDeviceId;
+
+    @TableField(exist = false)
+    private List<Device> childrenList;
 }

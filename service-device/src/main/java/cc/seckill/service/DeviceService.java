@@ -19,4 +19,6 @@ public interface DeviceService {
     int deleteDevice(Device device);
 
     int updateDeviceInfo(Device device);
+
+    long count();
 }

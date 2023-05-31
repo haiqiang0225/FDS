@@ -17,12 +17,37 @@
         FROM tb_device
 
         <if test="keyword != null">
-            WHERE device_id LIKE "%"#{keyword}"%"
+            WHERE device_id LIKE "%"#{keyword}"%" AND (parent_device_id = '' OR parent_device_id = null)
         </if>
+
+        <if test="keyword == null">
+            WHERE parent_device_id = '' OR parent_device_id = null
+        </if>
+
         <if test="count != -1">
             LIMIT #{start}, #{count}
         </if>
-
-
     </select>
+
+    <select id="queryDeviceListByParentId" resultType="cc.seckill.entities.Device">
+        SELECT device_id,
+               device_name,
+               device_type,
+               communication_protocol,
+               ipv4,
+               ipv6,
+               communication_path,
+               device_status,
+               manufacturer,
+               location,
+               parent_device_id
+
+        FROM tb_device
+        WHERE device_id in (
+            SELECT child_device_id
+            FROM tb_device_child
+            WHERE parent_device_id = #{parentId}
+            )
+    </select>
+
 </mapper>

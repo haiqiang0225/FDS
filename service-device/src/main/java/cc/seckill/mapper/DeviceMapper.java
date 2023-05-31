@@ -17,4 +17,6 @@ public interface DeviceMapper extends BaseMapper<Device> {
     List<Device> queryDeviceListByIDPaging(@Param("start") int start,
                                            @Param("count") int count,
                                            @Param("keyword") String keyword);
+
+    List<Device> queryDeviceListByParentId(@Param("parentId") String parentId);
 }

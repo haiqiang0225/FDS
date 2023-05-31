@@ -10,52 +10,78 @@
         ref="formRef"
         :model="form"
         :rules="rules"
-        label-width="100px"
+        label-width="160px"
     >
-      <el-form-item label="唯一标识" prop="username" :rows="4">
-        <el-input v-model="form.username"/>
+      <el-form-item label="设备名称" prop="deviceName" :rows="4">
+        <el-input v-model="form.deviceName"/>
       </el-form-item>
 
-      <el-form-item label="昵称" prop="nickname" :rows="4">
-        <el-input v-model="form.nickname"/>
-      </el-form-item>
-
-
-      <el-form-item label="密码" prop="password" v-if="dialogTitle === '用户添加'">
-        <el-input type="password" show-password v-model="form.password"/>
-      </el-form-item>
-
-      <el-form-item label="密码" v-if="dialogTitle === '用户修改'">
-        <el-input type="password" show-password v-model="form.password"/>
-      </el-form-item>
-
-
-      <el-form-item label="电话" prop="phone">
-        <el-input v-model="form.phoneNumber"/>
-      </el-form-item>
-
-      <el-form-item label="Email" prop="email">
-        <el-input v-model="form.email"/>
-      </el-form-item>
-
-      <el-form-item label="性别" prop="gender">
-        <el-radio-group v-model="form.gender">
-          <el-radio label="男" value="0"/>
-          <el-radio label="女" value="1"/>
-          <el-radio label="保密" value="2"/>
-        </el-radio-group>
-
-      </el-form-item>
-
-      <el-form-item label="账号状态" prop="status">
-        <el-select v-model="form.status" class="m-2" placeholder="Select" size="small">
+      <el-form-item label="设备类型" prop="deviceType" :rows="4">
+        <el-select v-model="form.deviceType" class="m-2" placeholder="请选择" size="small">
           <el-option
-              v-for="item in userStates"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="(item, index) in equipmentTypeList"
+              :key="index"
+              :label="item"
+              :value="index"
           />
         </el-select>
+      </el-form-item>
+
+
+      <el-form-item label="通信协议类型" prop="communicationProtocol">
+        <el-select v-model="form.communicationProtocol" class="m-2" placeholder="请选择" size="small">
+          <el-option
+              v-for="(item, index) in communicationProtocolList"
+              :key="index"
+              :label="item"
+              :value="index"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="ipv4">
+        <el-input v-model="form.ipv4"/>
+      </el-form-item>
+
+
+      <el-form-item label="ipv6" prop="ipv6">
+        <el-input v-model="form.ipv6"/>
+      </el-form-item>
+
+      <el-form-item label="其它协议通信地址" prop="communicationPath">
+        <el-input v-model="form.communicationPath"/>
+      </el-form-item>
+
+      <el-form-item label="设备状态" prop="deviceStatus">
+
+        <el-select v-model="form.deviceStatus" class="m-2" placeholder="请选择" size="small">
+          <el-option
+              v-for="(item, index) in equipmentStateList"
+              :key="index"
+              :label="item"
+              :value="index"
+          />
+        </el-select>
+
+      </el-form-item>
+
+      <el-form-item label="生产厂商" prop="manufacturer">
+        <el-select v-model="form.manufacturer" class="m-2" placeholder="请选择" size="small">
+          <el-option
+              v-for="(item, index) in manufacturerList"
+              :key="index"
+              :label="item"
+              :value="index"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="位置" prop="location">
+        <el-input v-model="form.location"/>
+      </el-form-item>
+
+      <el-form-item label="父设备UUID" prop="parentDeviceId">
+        <el-input v-model="form.parentDeviceId"/>
       </el-form-item>
 
     </el-form>
@@ -76,6 +102,7 @@ import {defineEmits, defineProps, ref, watch} from "vue"
 import requestUtil, {getRequestBaseUrl} from "@/utils/request";
 import {ElMessage} from 'element-plus'
 import qs from "qs";
+import * as deviceApi from "@/api/device"
 
 const props = defineProps(
     {
@@ -94,7 +121,7 @@ const props = defineProps(
         default: false,
         required: true
       },
-      user: {
+      device: {
         type: Object,
         default: undefined,
         required: true
@@ -102,52 +129,40 @@ const props = defineProps(
     }
 )
 
+const equipmentStateList = ref([])
 
-const userStates = [
-  {
-    value: 0,
-    label: "正常",
-  },
-  {
-    value: 1,
-    label: "冻结",
-  },
-  {
-    value: 2,
-    label: "注销",
-  },
-  {
-    value: 3,
-    label: "暂时封禁",
-  },
-  {
-    value: 4,
-    label: "永久封禁",
-  },
+const manufacturerList = ref([])
 
-]
+const equipmentTypeList = ref([])
+
+const communicationProtocolList = ref([])
+
+equipmentStateList.value = deviceApi.getEquipmentStates();
+manufacturerList.value = deviceApi.getManufacturerList();
+equipmentTypeList.value = deviceApi.getEquipmentTypes();
+communicationProtocolList.value = deviceApi.getCommunicationProtocolList();
 
 const form = ref({
-  userId: null,
-  username: null,
-  nickname: null,
-  password: null,
-  phoneNumber: null,
-  email: null,
-  gender: 0,
-  status: 0,
+  deviceId: null,
+  deviceName: null,
+  deviceType: 0,
+  communicationProtocol: "tcp/ip",
+  ipv4: "localhost",
+  ipv6: "::1",
+  communicationPath: null,
+  deviceStatus: 0,
+  manufacturer: 0,
+  location: null,
+  parentDeviceId: null,
 })
 
 
 const rules = ref({
-  username: [
-    {required: true, message: '请输入唯一标识'}
+  deviceName: [
+    {required: true, message: '请输入设备名'}
   ],
-  nickname: [
-    {required: true, message: '请输入昵称'}
-  ],
-  password: [
-    {required: true, message: '请输入密码'}
+  deviceType: [
+    {required: true, message: '请输入设备类型'}
   ],
 })
 
@@ -157,7 +172,7 @@ const formRef = ref(null)
 watch(
     () => props.dialogVisible,
     () => {
-      form.value = props.user;
+      form.value = props.device;
     }
 )
 
@@ -170,12 +185,9 @@ const handleClose = () => {
 const handleConfirm = () => {
   formRef.value.validate(async (valid) => {
     if (valid) {
-      // let formData = new FormData();
-      // formData.set("sysUser", props.user);
-      let formData = qs.stringify(form.value);
+      let formData = JSON.stringify(form.value);
       console.log(formData)
-
-      let result = await requestUtil.post("/api/sys/user/save", formData);
+      let result = await deviceApi.addDevice(formData);
       let data = result.data;
       if (data.code === 200) {
         ElMessage.success("执行成功！")

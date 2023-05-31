@@ -16,19 +16,42 @@
       </el-row>
 
 
-      <el-table :data="tableData.slice((currentPage - 1) * pageSize, currentPage * pageSize)"
+      <el-table :data="tableData"
                 stripe
                 default-expand-all
-                row-key="id"
+                row-key="deviceId"
                 style="width: 100%; "
                 @selection-change="handleSelectionChange"
                 :tree-props="{ children: 'childrenList' }"
       >
 
         <el-table-column type="selection"/>
-        <el-table-column prop="name" label="设备名称" align="center"/>
 
-        <el-table-column prop="type" label="设备类型" align="center"/>
+        <el-table-column prop="deviceId" label="UUID" align="center" show-overflow-tooltip>
+
+          <template #default="scope">
+            <el-button size="small"
+                       :text="true"
+                       style="width: 12px;"
+                       @click="copyToClipBoard(scope.row.deviceId)">
+              <el-icon>
+                <svg-icon icon="copy"/>
+              </el-icon>
+            </el-button>
+            {{ scope.row.deviceId }}
+
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="deviceName" label="设备名称" align="center"/>
+
+        <el-table-column prop="deviceType" label="设备类型" align="center">
+          <template #default="scope">
+
+            {{ equipmentTypeList[scope.row.deviceType] }}
+
+          </template>
+        </el-table-column>
 
         <el-table-column prop="communicationProtocol" label="通信协议" align="center"/>
 
@@ -38,19 +61,26 @@
 
         <el-table-column prop="communicationPath" label="其它协议通讯地址" align="center"/>
 
-        <el-table-column prop="manufacturer" label="生产厂商" align="center"/>
+        <el-table-column prop="manufacturer" label="生产厂商" align="center">
+          <template #default="scope">
+
+            {{ manufacturerList[scope.row.manufacturer] }}
+
+          </template>
+        </el-table-column>
 
         <el-table-column prop="location" label="设备位置" align="center"/>
 
-        <el-table-column prop="state" label="设备运行状态" align="center">
+        <el-table-column prop="deviceStatus" label="设备运行状态" align="center">
 
           <template #default="scope">
             <el-tag
-                :type="calcTagType(scope.row.state)"
-                disable-transitions
-            >{{ scope.row.state }}
-            </el-tag
-            >
+                :type="calcTagType(scope.row.deviceStatus)"
+                disable-transitions>
+
+              {{ equipmentStateList[scope.row.deviceStatus] }}
+
+            </el-tag>
           </template>
 
         </el-table-column>
@@ -67,8 +97,8 @@
             <el-button v-if="showEditButton(scope.row.username)" type="primary" :icon="Edit"
                        @click="handleDialogValue(scope.row)"/>
 
-            <el-popconfirm v-if="showDeleteButton(scope.row.username)" title="您确定要删除这条记录吗？"
-                           @confirm="handleDelete(scope.row.roleId)">
+            <el-popconfirm v-if="showDeleteButton(scope.row.deviceId)" title="您确定要删除这条记录吗？"
+                           @confirm="handleDelete(scope.row.deviceId)">
               <template #reference>
                 <el-button type="danger" :icon="Delete"/>
               </template>
@@ -95,23 +125,23 @@
   </div>
 
   <Dialog v-model="dialogVisible" :dialogVisible="dialogVisible" :dialogTitle="dialogTitle"
-          :user="user"
+          :device="device"
           @initUserList="initDeviceList"/>
 
-  <UserDialog v-model="menuDialogVisible" :menuDialogVisible="menuDialogVisible" :user="user"
+  <UserDialog v-model="menuDialogVisible" :menuDialogVisible="menuDialogVisible" :user="device"
               @initUserList="initDeviceList"></UserDialog>
 </template>
 
 <script setup>
-import {ref} from 'vue';
-import requestUtil, {getRequestBaseUrl} from "@/utils/request";
+import {ref, watch} from 'vue';
+import requestUtil from "@/utils/request";
 import {Search, Delete, DocumentAdd, Edit, Tools, RefreshRight} from '@element-plus/icons-vue'
 import Dialog from './components/dialog'
-import {ElMessage, ElMessageBox} from 'element-plus'
+import {ElMessage} from 'element-plus'
 import UserDialog from './components/DeviceDialog.vue'
-import qs from "qs"
-import mockApi from "@/utils/mockApi";
-import {equipments} from "@/mock/equipments";
+import * as deviceApi from "@/api/device"
+import qs from "qs";
+import {copyToClipBoard} from "@/utils/copy";
 
 const tableData = ref([])
 
@@ -126,9 +156,8 @@ const queryForm = ref({
 const currentPage = ref(1);
 const pageSize = ref(10);
 
-const deviceList = ref([]);
 
-let user = ref({});
+let device = ref({});
 
 const dialogVisible = ref(false)
 
@@ -138,35 +167,35 @@ const delBtnStatus = ref(true)
 
 const multipleSelection = ref([])
 
-const sysRoleList = ref([])
-
 const menuDialogVisible = ref(false)
 
+const equipmentStateList = ref([])
+
+const equipmentTypeList = ref([])
+
+const manufacturerList = ref([])
+
 const handleSelectionChange = (selection) => {
-  console.log("勾选了")
-  console.log(selection)
   multipleSelection.value = selection;
   delBtnStatus.value = selection.length === 0;
 }
 
 const handleMenuDialogValue = (prop) => {
-  user.value = prop;
-
+  device.value = prop;
   menuDialogVisible.value = true
 }
 
 const initDeviceList = async () => {
-  mockApi.getDeviceList()
-      .then(res => {
-        // console.log(res.data);
-        tableData.value = res.data;
-        total.value = tableData.value.length;
-      })
-  // const res = await requestUtil.get("/api/sys/menu/treeList?" + qs.stringify(queryForm.value));
-  // tableData.value = res.data.menuTree;
-  // console.log(res.data.menuTree)
-  // total.value = res.data.total;
-  // console.log(total.value)
+  equipmentStateList.value = deviceApi.getEquipmentStates();
+  equipmentTypeList.value = deviceApi.getEquipmentTypes();
+  manufacturerList.value = deviceApi.getManufacturerList();
+  let res = await deviceApi.getDeviceList(qs.stringify({
+    "start": (queryForm.value.pageNum - 1) * pageSize.value,
+    "count": pageSize.value,
+    "keyword": undefined
+  }))
+  tableData.value = res.data.deviceList;
+  total.value = res.data.count;
 }
 
 initDeviceList();
@@ -186,32 +215,48 @@ const handleCurrentChange = (pageNum) => {
 
 const handleDialogValue = (row) => {
   if (row) {
-    user.value = {
-      userId: row.userId,
-      username: row.username,
-      nickname: row.nickname,
-      phoneNumber: row.phoneNumber,
-      email: row.email,
-      gender: row.gender,
-      status: row.status,
+    device.value = {
+      deviceId: row.deviceId,
+      deviceName: row.deviceName,
+      deviceType: row.deviceType,
+      communicationProtocol: row.communicationProtocol,
+      ipv4: row.ipv4,
+      ipv6: row.ipv6,
+      communicationPath: row.communicationPath,
+      deviceStatus: row.deviceStatus,
+      manufacturer: row.manufacturer,
+      location: row.location,
+      parentDeviceId: row.parentDeviceId,
     };
 
-    dialogTitle.value = "用户修改"
+    dialogTitle.value = "修改信息"
   } else {
-    user.value = {
-      userId: null,
-      username: null,
-      nickname: null,
-      password: null,
-      phoneNumber: null,
-      email: null,
-      gender: 0,
-      status: 0,
+    device.value = {
+      deviceId: null,
+      deviceName: null,
+      deviceType: 0,
+      communicationProtocol: "tcp/ip",
+      ipv4: "localhost",
+      ipv6: "::1",
+      communicationPath: null,
+      deviceStatus: 0,
+      manufacturer: 0,
+      location: null,
+      parentDeviceId: null,
     };
-    dialogTitle.value = "用户添加"
+    dialogTitle.value = "添加设备"
   }
   dialogVisible.value = true
 }
+
+watch(
+    () => dialogVisible.value,
+    (value, oldValue, onCleanup) => {
+      if (value === false && oldValue === true) {
+        initDeviceList();
+      }
+    }
+)
 
 const handleDelete = async (id) => {
 
@@ -224,6 +269,7 @@ const handleDelete = async (id) => {
   }
   let formData = new FormData();
   formData.set("ids", ids.join(','));
+  // todo:
   const res = await requestUtil.post("/api/sys/user/delete", formData);
 
   if (res.data.code === 200) {
@@ -239,39 +285,6 @@ const handleDelete = async (id) => {
     })
   }
 }
-
-const handleResetPassword = async (id) => {
-  const res = await requestUtil.get("/api/sys/user/resetPassword/" + id)
-  if (res.data.code === 200) {
-    ElMessage({
-      type: 'success',
-      message: '执行成功!'
-    })
-    await initDeviceList();
-  } else {
-    ElMessage({
-      type: 'error',
-      message: res.data.msg,
-    })
-  }
-}
-
-const statusChangeHandle = async (row) => {
-  let res = await requestUtil.get("/api/sys/user/updateStatus/" + row.id + "/status/" + row.status);
-  if (res.data.code === 200) {
-    ElMessage({
-      type: 'success',
-      message: '执行成功!'
-    })
-  } else {
-    ElMessage({
-      type: 'error',
-      message: res.data.msg,
-    })
-    await initDeviceList();
-  }
-}
-
 
 function showEditButton(code) {
   return code !== 'root';

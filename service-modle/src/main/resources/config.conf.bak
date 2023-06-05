@@ -1,0 +1,26 @@
+model_config_list: {
+  config: {
+    name: "mnist",
+    base_path: "/models/mnist",
+    model_platform: "tensorflow",
+    model_version_policy {
+        specific: {
+            versions : 1,
+            versions : 2
+        }
+    }
+    version_labels {
+        key: 'stable',
+        value: 1
+    }
+    version_labels {
+        key: 'canary',
+        value: 2
+    }
+  },
+  config: {
+    name: "plus",
+    base_path: "/models/plus",
+    model_platform: "tensorflow"
+  }
+}

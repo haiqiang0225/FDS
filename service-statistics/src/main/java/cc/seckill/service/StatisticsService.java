@@ -1,0 +1,22 @@
+package cc.seckill.service;
+
+import cc.seckill.domain.Result;
+
+/**
+ * @author : Ji HaiQiang
+ * @version : 1.0.0
+ * @Package : cc.seckill.service
+ * @Description : MonitorService
+ * @Create on : 2023/6/2 17:15
+ */
+public interface StatisticsService {
+
+    Result getFaultCountByDeviceType();
+
+    Result getFaultCountByFaultType();
+
+    Result getFaultCountByFaultDegree();
+
+
+    Result recentFaults();
+}

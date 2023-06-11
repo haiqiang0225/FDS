@@ -14,6 +14,8 @@ import {
 } from 'echarts/components';
 import VChart, {THEME_KEY} from 'vue-echarts';
 import {ref, provide} from 'vue';
+import * as monitorApi from '@/api/monitor'
+import {ElMessage} from "element-plus";
 
 use([
   CanvasRenderer,
@@ -30,18 +32,27 @@ let today = [dateBase.getFullYear(), dateBase.getMonth(), dateBase.getDay()].joi
 let base = +dateBase;
 let oneSecond = 1000;
 let date = ref([]);
-let data = ref([30]);
+let data = ref([0]);
 let now = new Date(base);
+
 
 function addData(shift, pushZero) {
   let nowStr = [now.getHours(), now.getMinutes() + 1, now.getSeconds()].join(':');
   date.value.push(nowStr);
-  let newData = (Math.random() - 0.3) * 10 + data.value[data.value.length - 1];
-  newData = newData <= 30 ? newData : newData - Math.random() * 10;
+
   if (pushZero) {
     data.value.splice(0, 0, 0);
   } else {
-    data.value.push(newData);
+    monitorApi.getSysLoad()
+        .then(res => {
+          let sysLoad = String(res.data.sysLoad);
+          let value = sysLoad.substring(0, sysLoad.length - 2);
+          let newData = parseFloat(value);
+          data.value.push(newData);
+        })
+        .catch(err => {
+          console.log(err);
+        })
   }
   if (shift) {
     date.value.shift();
@@ -57,7 +68,7 @@ for (let i = 1; i < 10; i++) {
 const option = ref({
   animation: true,
   title: {
-    text: '系统实时负载(全局)',
+    text: '系统实时负载(全局)%',
     left: 'left',
   },
   tooltip: {
@@ -80,7 +91,7 @@ const option = ref({
   yAxis: {
     boundaryGap: [0, '20%'],
     type: 'value',
-    max: 120,
+    // max: 100,
     min: 0,
   },
   series: [

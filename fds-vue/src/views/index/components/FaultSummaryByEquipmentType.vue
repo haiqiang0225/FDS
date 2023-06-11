@@ -13,7 +13,7 @@ import {
 } from 'echarts/components';
 import VChart, {THEME_KEY} from 'vue-echarts';
 import {ref, provide} from 'vue';
-import mockApi from "@/utils/mockApi";
+import * as statisticsApi from "@/api/statistics"
 
 use([
   CanvasRenderer,
@@ -28,17 +28,9 @@ provide(THEME_KEY, 'light');
 const faults = ref([]);
 const labels = ref([])
 
-mockApi.getFaultCountsByEquipmentType()
-    .then(res => {
-      faults.value = res.data;
-      // 添加标签
-      for (let i = 0; i < faults.value.length; i++) {
-        labels.value.push(faults.value[i].name);
-      }
-    })
-    .catch(err => {
-      console.log(err);
-    })
+statisticsApi.getFaultCountByDeviceType().then(res => {
+  faults.value = res.data.faultCountsByDeviceType;
+})
 
 
 const option = ref({

@@ -50,4 +50,8 @@
             )
     </select>
 
+    <select id="selectCountGroupRunningState" resultType="cc.seckill.entities.KVEntity">
+        SELECT device_status as 'key', COUNT(*) as 'value' FROM `tb_device` GROUP BY device_status;
+    </select>
+
 </mapper>

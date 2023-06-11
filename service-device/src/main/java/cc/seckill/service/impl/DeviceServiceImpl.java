@@ -1,6 +1,8 @@
 package cc.seckill.service.impl;
 
+import cc.seckill.domain.Result;
 import cc.seckill.entities.Device;
+import cc.seckill.entities.KVEntity;
 import cc.seckill.mapper.DeviceMapper;
 import cc.seckill.service.DeviceService;
 import cc.seckill.util.UuidUtil;
@@ -60,5 +62,13 @@ public class DeviceServiceImpl implements DeviceService {
         QueryWrapper<Device> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("parent_device_id", "").or().eq("parent_device_id", null);
         return deviceMapper.selectCount(queryWrapper);
+    }
+
+    @Override
+    public Result getCountByRunningState() {
+        List<KVEntity<String, Integer>> kvEntities = deviceMapper.selectCountGroupRunningState();
+        Result result = new Result();
+        result.put("runningStates", kvEntities);
+        return result;
     }
 }

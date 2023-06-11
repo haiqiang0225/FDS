@@ -9,7 +9,7 @@ import {BarChart} from 'echarts/charts';
 import {LegendComponent, TitleComponent, TooltipComponent,} from 'echarts/components';
 import VChart, {THEME_KEY} from 'vue-echarts';
 import {provide, ref} from 'vue';
-import mockApi from "@/utils/mockApi";
+import * as statisticsApi from "@/api/statistics"
 
 use([
   CanvasRenderer,
@@ -24,14 +24,12 @@ provide(THEME_KEY, 'light');
 const types = ref([]);
 const faultCounts = ref([]);
 
-mockApi.getFaultCountsByFaultType()
-    .then(res => {
-      types.value = res.data[0];
-      faultCounts.value = res.data[1];
-    })
-    .catch(err => {
-      console.log(err);
-    })
+statisticsApi.getFaultCountByFaultType().then(res => {
+  let data = res.data;
+  types.value = data.types;
+  faultCounts.value = data.values;
+})
+
 
 const option = ref({
   title: {

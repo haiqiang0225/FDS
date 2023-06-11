@@ -75,7 +75,7 @@
 
           <template #default="scope">
             <el-tag
-                :type="calcTagType(scope.row.deviceStatus)"
+                :type="calcTagType(equipmentStateList[scope.row.deviceStatus])"
                 disable-transitions>
 
               {{ equipmentStateList[scope.row.deviceStatus] }}

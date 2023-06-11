@@ -2,6 +2,7 @@ package cc.seckill.mapper;
 
 import cc.seckill.DeviceMainApp;
 import cc.seckill.entities.Device;
+import cc.seckill.entities.KVEntity;
 import cc.seckill.util.Env;
 import cc.seckill.util.UuidUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +42,12 @@ public class DeviceMapperTest {
         List<Device> devices = deviceMapper.queryDeviceListByParentId("1KBRIKR3-001U-4VRI-002N-BTTF001ISLZJ");
         System.out.println(devices);
         assert !devices.isEmpty();
+    }
+
+    @Test
+    public void testSelectCountGroupRunningState() {
+        List<KVEntity<String, Integer>> kvEntities = deviceMapper.selectCountGroupRunningState();
+        System.out.println(kvEntities);
     }
 
 }

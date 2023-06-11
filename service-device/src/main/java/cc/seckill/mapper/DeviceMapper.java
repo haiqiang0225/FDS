@@ -1,6 +1,7 @@
 package cc.seckill.mapper;
 
 import cc.seckill.entities.Device;
+import cc.seckill.entities.KVEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -19,4 +20,6 @@ public interface DeviceMapper extends BaseMapper<Device> {
                                            @Param("keyword") String keyword);
 
     List<Device> queryDeviceListByParentId(@Param("parentId") String parentId);
+
+    List<KVEntity<String, Integer>> selectCountGroupRunningState();
 }

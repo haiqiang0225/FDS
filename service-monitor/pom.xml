@@ -26,6 +26,14 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.github.oshi/oshi-core -->
+        <dependency>
+            <groupId>com.github.oshi</groupId>
+            <artifactId>oshi-core</artifactId>
+            <version>6.4.2</version>
+        </dependency>
+
+
         <!--#####################################################################################-->
         <!--########################### Spring / Spring Cloud Related ###########################-->
         <!--#####################################################################################-->
@@ -88,7 +96,7 @@
         <!--    Spring Web    -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-actuator</artifactId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
         <!--   SpringDoc     -->

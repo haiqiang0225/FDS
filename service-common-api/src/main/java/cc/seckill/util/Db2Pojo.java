@@ -37,7 +37,9 @@ public class Db2Pojo {
                     // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("tb_user", "tb_role", "tb_menu", "tb_device", "tb_log", "tb_models") // 设置需要生成的表名
+                    builder.addInclude("tb_user", "tb_role", "tb_menu", "tb_device", "tb_log", "tb_models",
+                                    "tb_statistics_fault_by_equipment_type", "tb_statistics_fault_by_type",
+                                    "tb_statistics_fault_degree") // 设置需要生成的表名
                             .addTablePrefix("tb_", "c_"); // 设置过滤表前缀
                 })
                 .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板

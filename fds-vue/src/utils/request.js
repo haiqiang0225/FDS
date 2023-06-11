@@ -18,7 +18,9 @@ service.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencod
 let loadingInstance;
 // 添加请求拦截器
 service.interceptors.request.use(function (config) {
-    loadingInstance = ElLoading.service("加载中");
+    if (!config.doNotShowLoading) {
+        loadingInstance = ElLoading.service("加载中");
+    }
     // 在发送请求之前做些什么
     let token = sessionStorage.getItem("token") || localStorage.getItem("token");
     // let access_token = sessionStorage.getItem("access_token") || localStorage.getItem("access_token");

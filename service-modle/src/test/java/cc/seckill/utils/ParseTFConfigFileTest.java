@@ -1,10 +1,9 @@
 package cc.seckill.utils;
 
-import lombok.Data;
 import org.springframework.util.ResourceUtils;
 
 import java.io.*;
-import java.util.ArrayList;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,42 +15,47 @@ import java.util.Map;
  * @Description : ParseJSONFileTest
  * @Create on : 2023/6/1 09:06
  */
-public class ParseJSONFileTest {
+public class ParseTFConfigFileTest {
 
-    @Data
-    static class Node<K, V> {
-        private K key;
 
-        private V value;
+    static class ModelConfigNode {
+        private String name;
 
-        public Node(K key, V value) {
-            this.key = key;
-            this.value = value;
-        }
+        private String basePath;
 
-    }
+        private String modelPlatform;
 
-    static class ModelConfig {
         /**
-         * 一级属性，不存在下级
+         * String[] -> 存储versions的具体值
          */
-        private Map<String, String> attributes;
+        private Map<String, Map<String, String[]>> modelVersionPolicy;
 
-        private Map<String, List<Node>> childList;
+        /**
+         * String[0] -> key
+         * String[1] -> value
+         */
+        private List<String[]> versionLabels;
 
     }
 
     interface ModelConfigFileParser {
+
         List<String> getModelNames();
 
-        List<ModelConfig> getConfigs();
+        List<ModelConfigNode> getConfigs();
+
+        boolean addModelConfigNode(ModelConfigNode modelConfigNode);
+
+        default void refresh() {
+
+        }
 
     }
 
 
     public static void main(String[] args) throws FileNotFoundException {
-        File file = ResourceUtils.getFile("classpath:config.conf");
-        System.out.println(file);
+//        File file = ResourceUtils.getFile("classpath:config.conf");
+//        System.out.println(file);
     }
 
 

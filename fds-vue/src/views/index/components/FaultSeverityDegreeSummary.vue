@@ -13,7 +13,7 @@ import {
 } from 'echarts/components';
 import VChart, {THEME_KEY} from 'vue-echarts';
 import {ref, provide} from 'vue';
-import mockApi from "@/utils/mockApi";
+import * as statisticsApi from "@/api/statistics"
 
 use([
   CanvasRenderer,
@@ -27,16 +27,14 @@ provide(THEME_KEY, 'light');
 
 
 let labels = ref([]);
-let data = ref([]);
+let values = ref([]);
 
-mockApi.getFaultCountsByDegree()
-    .then(res => {
-      labels.value = res.data[0];
-      data.value = res.data[1];
-    })
-    .catch(err => {
-      console.log(err)
-    })
+
+statisticsApi.getFaultCountByFaultDegree().then(res => {
+  let data = res.data;
+  labels.value = data.labels;
+  values.value = data.values;
+})
 
 const option = ref({
   title: {
@@ -66,7 +64,7 @@ const option = ref({
       label: {
         formatter: '{b}: {c}'
       },
-      data: data,
+      data: values,
       itemStyle: {
         normal: {
           //这里是循环开始的地方

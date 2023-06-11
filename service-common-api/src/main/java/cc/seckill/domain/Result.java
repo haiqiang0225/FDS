@@ -2,6 +2,7 @@ package cc.seckill.domain;
 
 
 import cc.seckill.enums.ResultStatusCodes;
+import com.alibaba.fastjson.JSONObject;
 
 import java.io.Serial;
 import java.util.HashMap;
@@ -24,6 +25,12 @@ public class Result extends HashMap<String, Object> {
 
     public Result() {
         put("code", SUCCESS_CODE);
+    }
+
+    public Result(JSONObject jsonObject) {
+        for (String key : jsonObject.keySet()) {
+            this.put(key, jsonObject.get(key));
+        }
     }
 
     public static Result error() {

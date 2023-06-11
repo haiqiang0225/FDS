@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.seckill.mapper.KVEntityMapper">
+
+
+    <select id="queryRecentlyFaults" resultType="cc.seckill.entities.KVEntity">
+        SELECT id, date as `key`, count as `value`
+        FROM tb_recently_fault
+        ORDER BY `key`
+    </select>
+
+</mapper>

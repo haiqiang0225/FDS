@@ -1,5 +1,6 @@
 package cc.seckill.service;
 
+import cc.seckill.domain.Result;
 import cc.seckill.entities.Device;
 
 import java.util.List;
@@ -21,4 +22,6 @@ public interface DeviceService {
     int updateDeviceInfo(Device device);
 
     long count();
+
+    Result getCountByRunningState();
 }

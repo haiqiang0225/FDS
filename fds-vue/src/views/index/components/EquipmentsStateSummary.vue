@@ -15,10 +15,25 @@ import VChart, {THEME_KEY} from 'vue-echarts';
 import {ref, provide} from 'vue';
 import {useThemeStore} from "@/store/theme";
 import {storeToRefs} from "pinia";
+import * as statisticsApi from "@/api/statistics"
+import {equipmentStates} from "@/api/device";
+
 const themeStore = useThemeStore()
 
 const {theme} = storeToRefs(themeStore);
 
+const data = ref([]);
+
+statisticsApi.getRunningStatesCount().then(res => {
+  let dataRet = res.data;
+  let runningStates = dataRet.runningStates;
+  runningStates.forEach(item => {
+    data.value.push({
+      name : equipmentStates[item.key],
+      value : item.value,
+    })
+  })
+})
 
 use([
   TitleComponent,
@@ -80,13 +95,7 @@ let option = ref({
           borderWidth: 15,
         }
       },
-      data: [
-        {value: 1048, name: '正常运行中'},
-        {value: 735, name: '停机'},
-        {value: 580, name: '维护中'},
-        {value: 484, name: '需要维护'},
-        {value: 300, name: '故障'}
-      ],
+      data: data.value,
 
     }
   ]

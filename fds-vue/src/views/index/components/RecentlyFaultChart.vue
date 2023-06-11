@@ -12,7 +12,7 @@ import {
 } from 'echarts/components';
 import VChart, {THEME_KEY} from 'vue-echarts';
 import {ref, provide, reactive} from 'vue';
-import mockApi from "@/utils/mockApi";
+import * as statisticsApi from "@/api/statistics"
 
 use([
   TitleComponent,
@@ -26,15 +26,13 @@ provide(THEME_KEY, 'light');
 const dates = ref([]);
 const faults = ref([]);
 
-mockApi.getFaultCounts()
+statisticsApi.getRecentlyFaults()
     .then(res => {
-      dates.value = res.data[0];
-      faults.value = res.data[1];
+      let keys = res.data.keys;
+      let values = res.data.values;
+      dates.value = keys;
+      faults.value = values;
     })
-    .catch(err => {
-      console.log(err);
-    })
-
 
 
 const option = ref({

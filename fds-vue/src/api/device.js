@@ -2,7 +2,7 @@ import http from "@/utils/request";
 
 const urlPrefix = "/api/device";
 
-const equipmentStates = ['正常运行中', '停机', '维护中', '需要维护', '故障'];
+export const equipmentStates = ['正常运行中', '停机', '维护中', '需要维护', '故障'];
 
 const equipmentTypes = ['轴承', '基座'];
 

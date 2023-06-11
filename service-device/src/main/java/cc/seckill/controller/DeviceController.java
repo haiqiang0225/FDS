@@ -53,4 +53,9 @@ public class DeviceController {
         return Result.ok();
     }
 
+    @RequestMapping("/runningStatesCount")
+    public Result runningStatesCount() {
+        return deviceService.getCountByRunningState();
+    }
+
 }
